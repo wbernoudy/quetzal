@@ -105,3 +105,77 @@ Number of operations required is 7
 > (measure-register)
 The most likely result is |45> with a probability of 0.996585680786799
 ```
+
+## oracle-constructor.rkt: simulating a classical circuit for the oracle for Grover's algorithm
+
+### Design
+
+To actually use Grover's algorithm to search a "database", we need a way to convert the search function into the oracle. This is done by first generating a classical circuit which performs the search function, and the simulating this circuit with a quantum circuit. `oracle-constructor.rkt` allows you to input a classical circuit (represented by a boolean expression) and get the quantum circuit which simulates the circuit and acts as the oracle function. You can then input the oracle function (represented by a matrix) into the `Grover` function to perform Grover's algorithm.
+
+### Usage
+
+To use oracle-constructor.rkt`, do:
+
+```racket
+> (require "quetzal/quetzal.rkt")
+> (require "quetzal/oracle-constructor.rkt")
+```
+
+The function `generate-U_ω` generates the oracle. It a boolean expression as its only argument. After it is executed, the matrix representing the oracle operator will be set as `U_ω`, and `input-qubits` will contain the number of input qubits (used later on). For example, for the boolean expression (x<sub>0</sub> ∧ x<sub>1</sub>):
+
+```racket
+> (generate-U_ω '(∧ 0 1))
+> (matrix-print U_ω)
+1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 -1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 -1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 -1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 -1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 
+> input-qubits
+1
+```
+
+Besides the `∧` operator, there is also the `∨` and the `¬`. Both `∧` and `∨` take exactly two arguments, while `¬` takes one. You can also use `AND`, `OR` and `NOT` if you'd rather not use Unicode.
+
+Because there are extra qubits required for the simulated circuit (notice that in the above example, 5 qubits are needed despite there only being two inputs), there is a special Grover's algorithm function called `Grover-from-classical-circuit` that takes this into account. To use it, input the `U_ω` and `input-qubits` which are automatically generated after using `generate-U_ω`.
+
+```racket
+> (Grover-from-classical-circuit U_ω input-qubits)
+The number of required qubits is 5
+Number of operations required is 2
+> (measure-register)
+The most likely result is |24> with a probability of 0.9999999999999987
+```
+
+Since `|24>` equals `|11000>`, we can see that the algorithm was successful in finding the solution to the classical circuit.
+
+#### A note on classical circuits
+
+Grover's algorithm expects that there is only one state of the input bits which flips the phase. This means there should only be one solution to the search function, and thus the classical circuit you input. If there is more than one, `generate-U_ω` will not output a valid oracle matrix.
