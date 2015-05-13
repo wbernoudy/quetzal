@@ -138,7 +138,11 @@
 		)))
 
 
-(generate-U_ω '(∧ (∧ 0 1) (∧ 1 2)))
+(generate-U_ω '(∧ 0 1))
+
+(matrix-print U_ω)
+
+input-qubits
 
 (Grover-from-classical-circuit U_ω input-qubits)
 

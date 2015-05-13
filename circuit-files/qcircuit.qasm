@@ -3,13 +3,6 @@
 	qubit	q2
 	qubit	q3
 	qubit	q4
-	qubit	q5
-	qubit	q6
-	qubit	q7
-	toffoli	q0,q1,q3
-	toffoli	q1,q2,q4
-	toffoli	q3,q4,q5
-	cnot	q5,q6
-	toffoli	q3,q4,q5
-	toffoli	q1,q2,q4
-	toffoli	q0,q1,q3
+	toffoli	q0,q1,q2
+	cnot	q2,q3
+	toffoli	q0,q1,q2

@@ -43,20 +43,11 @@ At this point, quetzal provides the gates: `Hadamard-gate`, `Pauli-X-gate`, `Pau
 > ]))
 ```
 
-If the only gates you have applied to the register result in the qubits being in classical states (e.g. CNOT, Pauli-X, Toffoli, etc.) than you can use the function `measure-register-classical-state`
-
-```racket
-> register
-(mutable-array #[#[0 0 0 0 0 0 0 1]])
-> (measure-register-classical-state)
-111
-```
-
-Otherwise, you can use the function `measure-register` to display the most likely state for the system to collapse to on measurement and the likelihood of that happening:
+The function `measure-register` displays the most likely state for the system to collapse to on measurement and the likelihood of that happening:
 
 ```racket
 > (measure-register)
-The most likely result is |3> with a probability of 0.9991823155432934
+The most likely result is |011> with a probability of 0.9991823155432934
 ```
 
 ### Extra

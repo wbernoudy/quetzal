@@ -51,20 +51,9 @@
 			(when (< max (list-ref probabilities qubit))
 				(set! max (list-ref probabilities qubit))
 				(set! q-index qubit)))
-		(display "The most likely result is |") (display q-index)
+		(display "The most likely result is |") 
+		(display (~r q-index #:base 2 #:min-width (exact-round (/ (log (length Ψ)) (log 2))) #:pad-string "0"))
 		(display "> with a probability of ") (displayln max))))
-
-(define measure-register-classical-state (λ () ; If the register is in a classical state, displays the classical values of the qubits
-	(letrec ([reg-list (matrix->list register)] [pos null] [get-state (λ (lst)
-		(cond
-			[(null? lst) #f]
-			[(= 1 (car lst)) (length lst)]
-			[(= 0 (car lst)) (get-state (cdr lst))]
-			[else #f]))])
-		(set! pos (get-state reg-list))
-		(if pos
-			(displayln (~r (- (length reg-list) pos) #:base 2 #:min-width (exact-round (/ (log (length reg-list)) (log 2))) #:pad-string "0"))
-			(displayln "Register is not in a classical state.")))))
 
 (define G-nqubit-constructor (λ (N Q G)
 	(let ([Q (reverse Q)] [n (exact-round (/ (log N) (log 2)))] [i-binary '()] [j-binary '()] [i-j-differ #f] [Qprime '()] [i-star '()] [j-star '()])
