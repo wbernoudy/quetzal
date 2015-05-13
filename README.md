@@ -114,7 +114,7 @@ To actually use Grover's algorithm to search a "database", we need a way to conv
 
 ### Usage
 
-To use oracle-constructor.rkt`, do:
+To use `oracle-constructor.rkt`, do:
 
 ```racket
 > (require "quetzal/quetzal.rkt")
