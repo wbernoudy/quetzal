@@ -10,6 +10,7 @@
 (require "quetzal.rkt")
 
 (provide generate-fake-Oracle Grover)
+(provide phase-flip-0-state) ; for oracle-constructor.rkt
 
 ;-----------Constructors for the gates for Grover's algorithm--------;
 

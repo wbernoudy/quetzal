@@ -10,6 +10,7 @@
 (provide matrix-print initialize-register measure-register measure-register-classical-state apply-gate)
 (provide register Hadamard-gate Pauli-X-gate Pauli-Y-gate Pauli-Z-gate CNOT-gate QSwap-gate Toffoli-gate)
 (provide bits bits->row-matrix set-register) ; for Grover.rkt
+(provide G-nqubit-constructor) ; for oracle-constructor.rkt
 
 ;--------------------Quantum simulator functions---------------------;
 
@@ -92,8 +93,8 @@
 (define 1oversqrt2 (/ 1 (sqrt 2)))
 
 (define Hadamard-gate (matrix [
-	[list 1oversqrt2 1oversqrt2]
-	[list 1oversqrt2 (* 1oversqrt2 -1)]
+	[1oversqrt2 1oversqrt2]
+	[1oversqrt2 (* 1oversqrt2 -1)]
 ]))
 
 (define Pauli-X-gate (matrix [ ; also known as the NOT gate
