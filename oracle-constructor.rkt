@@ -90,18 +90,26 @@
 		(set! total-qubits (+ base-qubits (get-extra-qubits boolean-expression) 2)) ; Two extra: one to save the answer before we uncompute, and another for the phase flipper
 		(set! U_ω (identity-matrix (expt 2 total-qubits)))
 		(set! uncomputer (identity-matrix (expt 2 total-qubits)))
-		(set! computer-strings-for-latex (string-append "\tqubit\tq" (string-join (map (lambda (num) (number->string num)) (range total-qubits)) "\n\tqubit\tq") "\n"))
 		(eval boolean-expression ns)
 		(set! U_ω (matrix* U_ω (G-nqubit-constructor (expt 2 total-qubits) (list (- total-qubits 3) (- total-qubits 2)) CNOT-gate))) ; Copy output of simulated classical circuit to the nth qubit
-		(set! computer-strings-for-latex (string-append computer-strings-for-latex (string-append "\tcnot\tq" (number->string (- total-qubits 3)) ",q" (number->string (- total-qubits 2)) "\n")))
 		(set! U_ω (matrix* U_ω uncomputer))
 		(set! U_ω (matrix* U_ω 
 			(G-nqubit-constructor (expt 2 total-qubits) (list (- total-qubits 2) (- total-qubits 1)) CNOT-gate)
 			(G-nqubit-constructor (expt 2 total-qubits) (list (- total-qubits 2) (- total-qubits 1)) controlled-Z-gate)
 			(G-nqubit-constructor (expt 2 total-qubits) (list (- total-qubits 2) (- total-qubits 1)) CNOT-gate)
 			U_ω))
-		(void (write-file "./circuit-files/qcircuit.qasm" (string-append computer-strings-for-latex uncomputer-strings-for-latex)))
-		)))
+		(void (write-file "./circuit-files/qcircuit.qasm" (string-append
+			"\tqubit\tq" (string-join (map (lambda (num) (number->string num)) (range total-qubits)) ",0\n\tqubit\tq") ",0\n" ; Set up necessary qubits
+			computer-strings-for-latex ; Add the compute string
+			"\tcnot\tq" (number->string (- total-qubits 3)) ",q" (number->string (- total-qubits 2)) "\n" ; CNOT for the copy on to (n-1)th qubit
+			uncomputer-strings-for-latex ; Add the uncompute string
+			"\tcnot\tq" (number->string (- total-qubits 2)) ",q" (number->string (- total-qubits 1)) "\n" ; CNOT for the copy on to nth qubit
+			"\tc-z\tq" (number->string (- total-qubits 2)) ",q" (number->string (- total-qubits 1)) "\n" ; controlled Z on (n-1)th and nth qubits
+			"\tcnot\tq" (number->string (- total-qubits 2)) ",q" (number->string (- total-qubits 1)) "\n" ; CNOT for the uncopy on to nth qubit
+			computer-strings-for-latex ; Now we do the whole first half again, starting with the compute string
+			"\tcnot\tq" (number->string (- total-qubits 3)) ",q" (number->string (- total-qubits 2)) "\n" ; CNOT for the uncopy on to (n-1)th qubit
+			uncomputer-strings-for-latex ; Add the uncompute string
+		))))))
 
 (define special-make-Hadamard (λ (N up-to-qubit)
 	(letrec ([apply-H (λ (M qubit)
@@ -138,7 +146,7 @@
 		)))
 
 
-(generate-U_ω '(∧ 0 1))
+(generate-U_ω '(∧ (∧ 0 1) (∧ 1 2)))
 
 (matrix-print U_ω)
 

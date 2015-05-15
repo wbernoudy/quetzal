@@ -7,7 +7,7 @@
 (define-namespace-anchor a)
 (define ns (namespace-anchor->namespace a))
 
-(provide matrix-print initialize-register measure-register measure-register-classical-state apply-gate)
+(provide matrix-print initialize-register measure-register apply-gate)
 (provide register Hadamard-gate Pauli-X-gate Pauli-Y-gate Pauli-Z-gate CNOT-gate QSwap-gate Toffoli-gate)
 (provide bits bits->row-matrix set-register) ; for Grover.rkt
 (provide G-nqubit-constructor) ; for oracle-constructor.rkt

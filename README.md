@@ -162,11 +162,21 @@ Because there are extra qubits required for the simulated circuit (notice that i
 The number of required qubits is 5
 Number of operations required is 2
 > (measure-register)
-The most likely result is |24> with a probability of 0.9999999999999987
+The most likely result is |11000> with a probability of 0.9999999999999987
 ```
 
-Since `|24>` equals `|11000>`, we can see that the algorithm was successful in finding the solution to the classical circuit.
+Since the solution to the classical circuit we inputted is |11> we can see that the algorithm was successful.
 
 #### A note on classical circuits
 
 Grover's algorithm expects that there is only one state of the input bits which flips the phase. This means there should only be one solution to the search function, and thus the classical circuit you input. If there is more than one, `generate-U_ω` will not output a valid oracle matrix.
+
+### Generating circuit diagrams using qasm2circ
+
+Every time `generate-U_ω` is called, it creates file at `quetzal/circuit-files/qcircuit.qasm` which corresponds to the quantum circuit created. Using [qasm2circ](http://www.media.mit.edu/quanta/qasm2circ/), this file can then be easily converted to PDF format.
+
+I have included a simple bash scipt which handles this. After running `generate-U_ω`, do
+
+```
+$ quetzal/generate-circuit.sh
+```
