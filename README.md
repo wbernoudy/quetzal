@@ -94,7 +94,7 @@ The function `Grover` simulates the algorithm. It takes one argument, the matrix
 The number of required qubits is 6
 Number of operations required is 7
 > (measure-register)
-The most likely result is |45> with a probability of 0.996585680786799
+The most likely result is |101101> with a probability of 0.996585680786799
 ```
 
 ## oracle-constructor.rkt: simulating a classical circuit for the oracle for Grover's algorithm
@@ -175,7 +175,7 @@ Grover's algorithm expects that there is only one state of the input bits which 
 
 Every time `generate-U_ω` is called, it creates file at `quetzal/circuit-files/qcircuit.qasm` which corresponds to the quantum circuit created. Using [qasm2circ](http://www.media.mit.edu/quanta/qasm2circ/), this file can then be easily converted to PDF format.
 
-I have included a simple bash scipt which handles this. After running `generate-U_ω`, do
+I have included a simple bash scipt which handles this. It requires python2 and LaTeX to be installed (python2, latex, and dvipdf must be included in your PATH). After running `generate-U_ω`, do
 
 ```
 $ quetzal/generate-circuit.sh

@@ -10,7 +10,9 @@
 (require "quetzal.rkt")
 (require "Grover.rkt")
 
-;------it starts here
+(provide ¬ NOT ∨ OR ∧ AND Grover-from-classical-circuit U_ω input-qubits generate-U_ω)
+
+;--------------
 
 (define Oracle (λ (Ψ)
 	(matrix* Ψ U_ω)))
@@ -37,6 +39,8 @@
 	(set! uncomputer-strings-for-latex (string-append (string-append "\tX\tq" (number->string qubit) "\n") uncomputer-strings-for-latex)) ; just for LaTeX output
 	qubit))
 
+(define NOT ¬)
+
 (define ∨ (λ (qubit1 qubit2)
 	(void (¬ qubit1))
 	(void (¬ qubit2))
@@ -50,6 +54,8 @@
 	(set! next-safe-qubit (+ next-safe-qubit 1))
 	(- next-safe-qubit 1))) ; This, by defintion, is the output of the toffoli gate (the third qubit), so that's what we want to return
 
+(define OR ∨)
+
 (define ∧ (λ (qubit1 qubit2)
 	(set! U_ω (matrix* U_ω (Toffoli total-qubits (list qubit1 qubit2 next-safe-qubit))))
 	(set! computer-strings-for-latex (string-append computer-strings-for-latex (string-append "\ttoffoli\tq" (number->string qubit1) ",q" (number->string qubit2) ",q" (number->string next-safe-qubit) "\n"))) ; just for LaTeX output
@@ -57,6 +63,8 @@
 	(set! uncomputer-strings-for-latex (string-append (string-append "\ttoffoli\tq" (number->string qubit1) ",q" (number->string qubit2) ",q" (number->string next-safe-qubit) "\n") uncomputer-strings-for-latex)) ; just for LaTeX output
 	(set! next-safe-qubit (+ next-safe-qubit 1))
 	(- next-safe-qubit 1))) ; This, by defintion, is the output of the toffoli gate (the third qubit), so that's what we want to return
+
+(define AND ∧)
 
 (define get-extra-qubits (λ (boolean-expression)
 	(cond
@@ -144,16 +152,3 @@
 		(for ([i steps])
 			(special-Hadamard (phase-flip-0-state (special-Hadamard (Oracle register))))) ; Apply the Grover Diffusion operator
 		)))
-
-
-(generate-U_ω '(∧ (∧ 0 1) (∧ 1 2)))
-
-(matrix-print U_ω)
-
-input-qubits
-
-(Grover-from-classical-circuit U_ω input-qubits)
-
-register
-
-(measure-register)
