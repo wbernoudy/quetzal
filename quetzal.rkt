@@ -46,14 +46,14 @@
 
 (define measure-register (λ ()
 	(let ([Ψ (matrix->list register)] [q-index 0] [max 0] [probabilities null])
-		(set! probabilities (map (λ (qubit) (* qubit qubit)) Ψ))
+		(set! probabilities (map (λ (qubit) (magnitude qubit)) Ψ))
 		(for ([qubit (length Ψ)])
 			(when (< max (list-ref probabilities qubit))
 				(set! max (list-ref probabilities qubit))
 				(set! q-index qubit)))
 		(display "The most likely result is |") 
 		(display (~r q-index #:base 2 #:min-width (exact-round (/ (log (length Ψ)) (log 2))) #:pad-string "0"))
-		(display "> with a probability of ") (displayln max))))
+		(display "> with a probability of ") (displayln (* max max)))))
 
 (define G-nqubit-constructor (λ (N Q G)
 	(let ([Q (reverse Q)] [n (exact-round (/ (log N) (log 2)))] [i-binary '()] [j-binary '()] [i-j-differ #f] [Qprime '()] [i-star '()] [j-star '()])
