@@ -180,3 +180,5 @@ I have included a simple bash scipt which handles this. It requires python2 and 
 ```
 $ quetzal/generate-circuit.sh
 ```
+Here's the diagram generated after doing `(generate-U_ω '(∧ (∧ 0 1) (∧ 1 2)))`:
+![Generated circuit diagram](https://www.williambernoudy.com/resources/images/qcircuit.png)
