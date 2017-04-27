@@ -107,7 +107,7 @@
 			(G-nqubit-constructor (expt 2 total-qubits) (list (- total-qubits 2) (- total-qubits 1)) CNOT-gate)
 			U_ω))
 		(void (write-file "./circuit-files/qcircuit.qasm" (string-append
-			"\tqubit\tq" (string-join (map (lambda (num) (number->string num)) (range total-qubits)) ",0\n\tqubit\tq") ",0\n" ; Set up necessary qubits
+			"\tqubit\tq" (string-join (map (lambda (num) (number->string num)) (range total-qubits)) "\n\tqubit\tq") "\n" ; Set up necessary qubits
 			computer-strings-for-latex ; Add the compute string
 			"\tcnot\tq" (number->string (- total-qubits 3)) ",q" (number->string (- total-qubits 2)) "\n" ; CNOT for the copy on to (n-1)th qubit
 			uncomputer-strings-for-latex ; Add the uncompute string
