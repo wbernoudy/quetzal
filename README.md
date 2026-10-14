@@ -15,7 +15,7 @@ This includes the functions required for basic simulation. To use it in your cod
 First, use `initialize-register`. This function accepts a list of the classical states you want to set the qubits to.
 
 ```racket
-> (initialize-qubits '(0 1 0)) ; Initialize register with three qubits with the state |010>
+> (initialize-register '(0 1 0)) ; Initialize register with three qubits with the state |010>
 ```
 
 Now, at any point, you can access the n x 1 (for n-qubits) matrix corresponding to the vector representing the state of the qubits stored in the variable `register`.
